@@ -4,12 +4,12 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:5599",
+      "applicationUrl": "http://localhost:17248",
       "sslPort": 0
     }
   },
   "profiles": {
-    "http": {
+    "FlightPlanner": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
