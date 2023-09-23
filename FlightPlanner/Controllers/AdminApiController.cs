@@ -30,17 +30,21 @@ namespace FlightPlanner.Controllers
         [HttpPut]
         public IActionResult PutFlight(Flight flight)
         {
-            var flightList = _storage.GetFlightList();
-            
-            if (flightList.Contains(flight))
+            if (_storage.CheckForDuplicateFlight(flight) != null)
             {
-              return Conflict();
+                return Conflict();
+            }
+
+            if (_storage.CheckForWrongValues(flight) ||
+                _storage.CheckForTheSameAirports(flight) ||
+                _storage.CheckForStrangeDate(flight))
+            {
+                return BadRequest();
             }
 
             _storage.AddFlight(flight);
+
             return Created("", flight);
-            
-            //throw new DuplicateFlightException();
         }
     }
 }
