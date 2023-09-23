@@ -31,3 +31,4 @@ C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner\obj\Debug\net7.0\refint\Flig
 C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner\obj\Debug\net7.0\FlightPlanner.pdb
 C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner\obj\Debug\net7.0\FlightPlanner.genruntimeconfig.cache
 C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner\obj\Debug\net7.0\ref\FlightPlanner.dll
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner\bin\Debug\net7.0\Newtonsoft.Json.dll

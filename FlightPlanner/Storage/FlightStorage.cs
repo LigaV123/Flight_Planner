@@ -19,6 +19,11 @@ namespace FlightPlanner.Storage
             _flightStorage.Clear();
         }
 
+        public void DeleteFlight(int id)
+        {
+            _flightStorage.RemoveAll(f => f.Id == id);
+        }
+
         public Flight? CheckForDuplicateFlight(Flight flight)
         {
             return _flightStorage.Where(f =>
@@ -58,6 +63,23 @@ namespace FlightPlanner.Storage
         {
             return flight.DepartureTime == flight.ArrivalTime ||
                    DateTime.Parse(flight.DepartureTime) > DateTime.Parse(flight.ArrivalTime);
+        }
+
+        public Flight? FindFlight(int id)
+        {
+            return _flightStorage.FirstOrDefault(f => f.Id == id);
+        }
+
+        public Flight FindAirport(string airport)
+        {
+            var airportStr = airport.ToLower().Trim();
+
+            var flight = _flightStorage.First(f => 
+                f.From.Country.ToLower().Substring(0, airportStr.Length) == airportStr || 
+                f.From.City.ToLower().Substring(0, airportStr.Length) == airportStr ||
+                f.From.AirportCode.ToLower().Substring(0, airportStr.Length) == airportStr);
+
+            return flight;
         }
     }
 }

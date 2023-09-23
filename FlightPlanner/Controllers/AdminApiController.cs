@@ -1,5 +1,4 @@
-﻿using FlightPlanner.Exceptions;
-using FlightPlanner.Models;
+﻿using FlightPlanner.Models;
 using FlightPlanner.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,17 +10,17 @@ namespace FlightPlanner.Controllers
     [ApiController]
     public class AdminApiController : ControllerBase
     {
-        private readonly FlightStorage _storage;
-
-        public AdminApiController()
-        {
-            _storage = new FlightStorage();
-        }
+        private readonly FlightStorage _storage = new ();
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
+            if (_storage.FindFlight(id) != null)
+            {
+                return Ok();
+            }
+
             return NotFound();
         }
 
@@ -45,6 +44,15 @@ namespace FlightPlanner.Controllers
             _storage.AddFlight(flight);
 
             return Created("", flight);
+        }
+
+        [Route("flights/{id}")]
+        [HttpDelete]
+        public IActionResult DeleteFlight(int id)
+        {
+            _storage.DeleteFlight(id);
+
+            return Ok();
         }
     }
 }
