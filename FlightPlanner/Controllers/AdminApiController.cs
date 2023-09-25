@@ -11,12 +11,13 @@ namespace FlightPlanner.Controllers
     public class AdminApiController : ControllerBase
     {
         private readonly FlightStorage _storage = new ();
+        private static readonly object _locker = new();
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            if (_storage.FindFlight(id) != null)
+            if (_storage.FindFlightById(id) != null)
             {
                 return Ok();
             }
@@ -29,19 +30,23 @@ namespace FlightPlanner.Controllers
         [HttpPut]
         public IActionResult PutFlight(Flight flight)
         {
-            if (_storage.CheckForDuplicateFlight(flight) != null)
+            lock (_locker)
             {
-                return Conflict();
-            }
+                if (_storage.CheckForDuplicateFlight(flight) >= 0)
+                {
+                    return Conflict();
+                }
 
-            if (_storage.CheckForWrongValues(flight) ||
+                if (_storage.CheckForWrongValuesInFlight(flight) ||
                 _storage.CheckForTheSameAirports(flight) ||
                 _storage.CheckForStrangeDate(flight))
-            {
-                return BadRequest();
-            }
+                {
+                    return BadRequest();
+                }
 
-            _storage.AddFlight(flight);
+                _storage.AddFlight(flight);
+            }
+            
 
             return Created("", flight);
         }
@@ -50,7 +55,10 @@ namespace FlightPlanner.Controllers
         [HttpDelete]
         public IActionResult DeleteFlight(int id)
         {
-            _storage.DeleteFlight(id);
+            lock (_locker)
+            {
+                _storage.DeleteFlight(id);
+            }
 
             return Ok();
         }
