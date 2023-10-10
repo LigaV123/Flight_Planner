@@ -1,5 +1,7 @@
-﻿using FlightPlanner.Models;
-using FlightPlanner.Storage;
+﻿using Azure.Core;
+using FlightPlanner.Core.Models;
+using FlightPlanner.Core.Services;
+using FlightPlanner.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,19 +12,19 @@ namespace FlightPlanner.Controllers
     [ApiController]
     public class AdminApiController : ControllerBase
     {
-        private readonly FlightStorage _storage;
+        private readonly IEntityService<Flight> _flightService;
         private static readonly object _locker = new();
 
-        private AdminApiController(FlightStorage storage)
+        public AdminApiController(IEntityService<Flight> flightService)
         {
-            _storage = storage;
+            _flightService = flightService;
         }
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            if (_storage.FindFlightById(id) != null)
+            if (_flightService.GetById(id) != null)
             {
                 return Ok();
             }
@@ -33,27 +35,29 @@ namespace FlightPlanner.Controllers
 
         [Route("flights")]
         [HttpPut]
-        public IActionResult PutFlight(Flight flight)
+        public IActionResult PutFlight(FlightRequest request)
         {
+            var flight = MapToFlight(request);
             lock (_locker)
             {
-                if (_storage.CheckForDuplicateFlight(flight) != null)
-                {
-                    return Conflict();
-                }
+                //if (_flightService.CheckForDuplicateFlight(flight) != null)
+                //{
+                //    return Conflict();
+                //}
 
-                if (_storage.CheckForWrongValuesInFlight(flight) ||
-                _storage.CheckForTheSameAirports(flight) ||
-                _storage.CheckForStrangeDate(flight))
-                {
-                    return BadRequest();
-                }
+                //if (_flightService.CheckForWrongValuesInFlight(flight) ||
+                //_flightService.CheckForTheSameAirports(flight) ||
+                //_flightService.CheckForStrangeDate(flight))
+                //{
+                //    return BadRequest();
+                //}
 
-                _storage.AddFlight(flight);
+                _flightService.Create(flight);
             }
-            
 
-            return Created("", flight);
+            request = MapToFlightRequest(flight);
+
+            return Created("", request);
         }
 
         [Route("flights/{id}")]
@@ -62,10 +66,57 @@ namespace FlightPlanner.Controllers
         {
             lock (_locker)
             {
-                _storage.DeleteFlight(id);
+                var flight = _flightService.GetById(id);
+                _flightService.Delete(flight);
             }
 
             return Ok();
+        }
+
+        private Flight MapToFlight(FlightRequest request)
+        {
+            return new Flight
+            {
+                Id = request.Id,
+                Carrier = request.Carrier,
+                DepartureTime = request.DepartureTime,
+                ArrivalTime = request.ArrivalTime,
+                From = new Airport
+                {
+                    Country = request.From.Country,
+                    City = request.From.City,
+                    AirportCode = request.From.Airport
+                },
+                To = new Airport
+                {
+                    Country = request.To.Country,
+                    City = request.To.City,
+                    AirportCode = request.To.Airport
+                }
+            };
+        }
+
+        private FlightRequest MapToFlightRequest(Flight flight)
+        {
+            return new FlightRequest
+            {
+                Id = flight.Id,
+                Carrier = flight.Carrier,
+                DepartureTime = flight.DepartureTime,
+                ArrivalTime = flight.ArrivalTime,
+                From = new AirportRequest
+                {
+                    Country = flight.From.Country,
+                    City = flight.From.City,
+                    Airport = flight.From.AirportCode
+                },
+                To = new AirportRequest
+                {
+                    Country = flight.To.Country,
+                    City = flight.To.City,
+                    Airport = flight.To.AirportCode
+                }
+            };
         }
     }
 }

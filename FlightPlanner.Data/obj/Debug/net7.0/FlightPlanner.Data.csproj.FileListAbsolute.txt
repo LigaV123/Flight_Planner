@@ -1,0 +1,17 @@
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Data.deps.json
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Data.runtimeconfig.json
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Data.dll
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Data.pdb
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Core.dll
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\bin\Debug\net7.0\FlightPlanner.Core.pdb
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.csproj.AssemblyReference.cache
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.AssemblyInfoInputs.cache
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.AssemblyInfo.cs
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.csproj.CoreCompileInputs.cache
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.csproj.CopyComplete
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.dll
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\refint\FlightPlanner.Data.dll
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.pdb
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\FlightPlanner.Data.genruntimeconfig.cache
+C:\Users\piga4\Desktop\Flight_Planner\FlightPlanner.Data\obj\Debug\net7.0\ref\FlightPlanner.Data.dll
