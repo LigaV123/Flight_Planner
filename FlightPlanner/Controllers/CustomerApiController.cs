@@ -15,15 +15,15 @@ namespace FlightPlanner.Controllers
         [HttpGet]
         public IActionResult GetAirport(string search)
         {
-            var flight = _storage.FindAirport(search);
+            var airport = _storage.FindAirport(search);
 
             var data = new[]
             {
                 new
                 {
-                    airport = flight.From.AirportCode,
-                    city = flight.From.City,
-                    country = flight.From.Country
+                    airport = airport.AirportCode,
+                    city = airport.City,
+                    country = airport.Country
                 }
             };
 

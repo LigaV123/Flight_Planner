@@ -10,8 +10,13 @@ namespace FlightPlanner.Controllers
     [ApiController]
     public class AdminApiController : ControllerBase
     {
-        private readonly FlightStorage _storage = new ();
+        private readonly FlightStorage _storage;
         private static readonly object _locker = new();
+
+        private AdminApiController(FlightStorage storage)
+        {
+            _storage = storage;
+        }
 
         [Route("flights/{id}")]
         [HttpGet]
@@ -32,7 +37,7 @@ namespace FlightPlanner.Controllers
         {
             lock (_locker)
             {
-                if (_storage.CheckForDuplicateFlight(flight) >= 0)
+                if (_storage.CheckForDuplicateFlight(flight) != null)
                 {
                     return Conflict();
                 }
