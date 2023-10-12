@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using AutoMapper;
+using FlightPlanner.Core.Interfaces;
 using FlightPlanner.Core.Models;
 using FlightPlanner.Core.Services;
 using FlightPlanner.Models;
@@ -12,50 +13,55 @@ namespace FlightPlanner.Controllers
     [ApiController]
     public class AdminApiController : ControllerBase
     {
-        private readonly IEntityService<Flight> _flightService;
+        private readonly IFlightService _flightService;
+        private readonly IMapper _mapper;
+        private readonly IEnumerable<IValidation> _validators;
         private static readonly object _locker = new();
 
-        public AdminApiController(IEntityService<Flight> flightService)
+        public AdminApiController(
+            IFlightService flightService, 
+            IMapper mapper,
+            IEnumerable<IValidation> validators)
         {
             _flightService = flightService;
+            _mapper = mapper;
+            _validators = validators;
         }
 
         [Route("flights/{id}")]
         [HttpGet]
         public IActionResult GetFlight(int id)
         {
-            if (_flightService.GetById(id) != null)
+            var flight = _flightService.GetFullFlightById(id);
+            if (flight != null)
             {
-                return Ok();
+                return Ok(_mapper.Map<FlightRequest>(flight));
             }
 
             return NotFound();
         }
 
-
         [Route("flights")]
         [HttpPut]
         public IActionResult PutFlight(FlightRequest request)
         {
-            var flight = MapToFlight(request);
+            var flight = _mapper.Map<Flight>(request);
             lock (_locker)
             {
-                //if (_flightService.CheckForDuplicateFlight(flight) != null)
-                //{
-                //    return Conflict();
-                //}
+                if (!_validators.All(v => v.IsValid(flight)))
+                {
+                    return BadRequest();
+                }
 
-                //if (_flightService.CheckForWrongValuesInFlight(flight) ||
-                //_flightService.CheckForTheSameAirports(flight) ||
-                //_flightService.CheckForStrangeDate(flight))
-                //{
-                //    return BadRequest();
-                //}
+                if (_flightService.CheckForDuplicateFlight(flight))
+                {
+                    return Conflict();
+                }
 
                 _flightService.Create(flight);
             }
 
-            request = MapToFlightRequest(flight);
+            request = _mapper.Map<FlightRequest>(flight);
 
             return Created("", request);
         }
@@ -66,57 +72,10 @@ namespace FlightPlanner.Controllers
         {
             lock (_locker)
             {
-                var flight = _flightService.GetById(id);
-                _flightService.Delete(flight);
+                _flightService.DeleteFlightById(id);
             }
-
+            
             return Ok();
-        }
-
-        private Flight MapToFlight(FlightRequest request)
-        {
-            return new Flight
-            {
-                Id = request.Id,
-                Carrier = request.Carrier,
-                DepartureTime = request.DepartureTime,
-                ArrivalTime = request.ArrivalTime,
-                From = new Airport
-                {
-                    Country = request.From.Country,
-                    City = request.From.City,
-                    AirportCode = request.From.Airport
-                },
-                To = new Airport
-                {
-                    Country = request.To.Country,
-                    City = request.To.City,
-                    AirportCode = request.To.Airport
-                }
-            };
-        }
-
-        private FlightRequest MapToFlightRequest(Flight flight)
-        {
-            return new FlightRequest
-            {
-                Id = flight.Id,
-                Carrier = flight.Carrier,
-                DepartureTime = flight.DepartureTime,
-                ArrivalTime = flight.ArrivalTime,
-                From = new AirportRequest
-                {
-                    Country = flight.From.Country,
-                    City = flight.From.City,
-                    Airport = flight.From.AirportCode
-                },
-                To = new AirportRequest
-                {
-                    Country = flight.To.Country,
-                    City = flight.To.City,
-                    Airport = flight.To.AirportCode
-                }
-            };
         }
     }
 }

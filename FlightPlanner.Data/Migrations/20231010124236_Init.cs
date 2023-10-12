@@ -45,7 +45,7 @@ namespace FlightPlanner.Data.Migrations
                         column: x => x.FromId,
                         principalTable: "Airports",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Flights_Airports_ToId",
                         column: x => x.ToId,
