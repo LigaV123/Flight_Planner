@@ -1,124 +1,61 @@
-# Flight Planner ✈ ✈ ✈
+# Flight Planner
 
-## Goal
+This is an API project with CRUD operations.
 
-Your goal is to create an application which can store flights between different airports and allows you to search them.
+### To Run
+Activate the **FlightPlanner.sln** (it is located at FlightPlanner folder) solution file using Windows Visual Studio.
+Press the **F5** button or click the **run/debug** button to launch the project(it should open the Swagger page in the browser, displaying CRUD operations).
 
-## Getting Started
+### Description
 
-- Download dependencies: `npm install`
-- Execute tests (your app must be running locally on port `8080`): `npm test`
-- Generate demo data: `npm run demo`
+There are three main sections located there:
+- AdminApi
+- Cleanup
+- CustomerApi
 
-## Assignments
+#### AdminApi
+There are three request methods which can be used only by using username: **codelex-admin** and password: **Password123**
+In the Swagger page it is not possible to use username and password so I recomend to test them out in [postman API platform](https://www.postman.com/downloads/) or [insomnia API platform](https://insomnia.rest/download) by downloading one of them. By trying to use any of these three requests in the Swagger page, there will be 401 Unauthorized responses.
 
-**Before any step**
+With PUT function new flight gets created: Try creating the below provided flight in json format. Entity Framework takes care of automated Id generation, there is no need to create one on your own.
+By creating two identical flights there will be 409 Conflict response, and 400 Bad Request error if AirportCodes are the same in airport from and airport to, if any value is null or empty or if arrival time is greater than departure time (unfortunately we can’t return to the past).
 
-Create a branch named **exactly** as required in each step, otherwise pull request will be declined.
- 
-### 1. Setup project (branch name: *init*)
+```
+{
+      "from": { "country": "Russia", 
+	 					"city": "Moscow", 
+	 					"airport": "DME" },
 
-Create a **public** repository called *flight-planner* under your github account. Remember - your code will be visible to the world!
+      "to": { "country": "Sweden", 
+					"city": "Stockholm", 
+					"airport": "ARN" },
 
-<details><summary>Java</summary>
-<p>
+      "carrier": "Ryanair",
+      "departureTime": "2019-01-01 00:00",
+      "arrivalTime": "2019-01-02 00:00"
+    }
+```
 
-Generate a project [@start.spring.io](https://start.spring.io)
+With GET function it is possible to get the flight by its Id. Providing the wrong Id will result in a 404 Not Found error.
 
-Choose:
+With DELETE function flight can be deleted by its Id.
 
- - gradle project
- - Java 11
- - latest stable Spring Boot version
- - group - *io.codelex*
- - artifact - *flight-planner*
- - add dependencies - web, spring-security
+#### Cleanup
+This section has only one function - POST, it clears all of the data from the database. And it works on the Swagger page as well.
+After clearing the database or deleting the flight by Id as administrator, I suggest creating and adding a new flight as administrator through insomnia or postman so it is possible to test CustomerApi requests.
 
-Download generated project, add everything to your repository, *commit & push*.
+#### CustomerApi
+These functions work just fine in the Swagger page.
+The first GET function will display all the airports which match the inserted AirportCode, Country or City name. Providing the wrong AirportCode, Country or City name will result in a 404 Not Found error, for null or empty value it will display 400 Bad Request response.
 
-Then follow **all** the steps mentioned in [codelex-io/example-spring-project](https://github.com/codelex-io/example-spring-project) repository.
+The POST function will make a list of searched flights by searching with AirportCode and departure date. Providing wrong, empty or null values there will be 400 Bad Request error.
 
-</p>
-</details>
+```
+{
+  "from": "DME",
+  "to": "ARN",
+  "departureDate": "2019-01-01"
+}
+```
 
-**Definition of Done:**
-
-  - Build is successful
-
-### 2. Implement in-memory type application (branch name: *feature/in-memory-app*)
-
-**Prerequisites:**
-
-<details><summary>Java</summary>
-<p>
-
- - [Building a RESTful Web Service @spring.io](http://spring.io/guides/gs/rest-service)
- - [Building Java Projects with Gradle @spring.io](http://spring.io/guides/gs/gradle/)
- - [Spring Security Basic Authentication @baeldung.com](https://www.baeldung.com/spring-security-basic-authentication)
-
-</p>
-</details>
-
-**Goal:**
-
- - Get all tests green while storing all the information in memory, list or any other suitable data structure can be used.
-
-**Definition of Done:**
-
-  - Build is successful
-
-### 3. Implement database type application (branch name: *feature/adding-database*)
-
-**Prerequisites:**
-
-- Persist flight data in the database
-- Keep possibility to run application in no-database mode
-
-<details><summary>Java</summary>
-<p>
-
- - [Accessing Data with JPA Service @spring.io](https://spring.io/guides/gs/accessing-data-jpa/)
- - [The persistence layer with spring data JPA @baeldung.com](https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa)
- - [Database initialization @docs.spring.io](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html)
- - [Docker](https://www.docker.com/get-started) installed on your machine
- - Subscribe to the [vladmihalcea.com](https://vladmihalcea.com/) newsletter
- - [Transaction configuration in Spring @baeldung.com](https://www.baeldung.com/transaction-configuration-with-jpa-and-spring)
-
-**Goal:**
-
- - Persist flight data in the [PostgreSQL](https://www.postgresql.org/) database
- - Keep possibility to run application in no-database mode, this must be achieved through the configuration property: `flight-planner.store-type` with values `in-memory/database` 
- - Generate database schema with [Liquibase](https://www.liquibase.org/)
- - Cover repositories with an integration tests
-
-**Running PostgreSQL locally:**
-
-Run latest PostgreSQL locally in docker:
-
-```docker run -p 5432:5432 -e POSTGRES_USER=codelex -e POSTGRES_PASSWORD=codelex -e POSTGRES_DB=flight_planner postgres```
-
-**Generating schema with [Liquibase](https://www.liquibase.org/):**
-
-There is good explanation about [Liquibase @baeldung.com](https://www.baeldung.com/liquibase-refactor-schema-of-java-app) make sure to read it through.
-
-Our goal is to describe database schema in *xml* which will be read and executed by Liquibase.
-
-**Testing database queries against real database:**
-
-We can use [Testcontainers](https://www.testcontainers.org/) to test queries against the PostgreSQL in a docker container.
-</p>
-</details>
-
-**Notes about the database schema:**
-
- - Use sequence for id generation
- - Properly apply foreign keys
-    - Naming
-    - Indexes must be present
- - Apply *non-null constraints* where applicable
- - Apply *unique constraints* where applicable
-
-**Definition of Done:**
-
-  - Build is successful
-  - External tests are passing in *in-memory* & *database* mode
+The second GET function will find flight by its Id number. Providing the wrong Id will result in a 404 Not Found error.
