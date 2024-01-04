@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FlightPlanner.Core.Models;
 using FlightPlanner.Core.Services;
 using FlightPlanner.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,11 @@ namespace FlightPlanner.Controllers
         public IActionResult GetAirport(string search)
         {
             var airport = _airportService.SearchAirport(search);
+
+            if (airport == null)
+            {
+                return NotFound();
+            }
 
             var data = new[]
             {

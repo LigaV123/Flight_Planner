@@ -4,6 +4,6 @@ namespace FlightPlanner.Core.Services
 {
     public interface IAirportService : IEntityService<Airport>
     {
-        Airport SearchAirport(string phrase);
+        Airport? SearchAirport(string phrase);
     }
 }

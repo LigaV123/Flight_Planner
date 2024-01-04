@@ -9,11 +9,11 @@ namespace FlightPlanner.Services
         public AirportService(IFlightPlannerDbContext context) : base(context)
         { }
 
-        public Airport SearchAirport(string phrase)
+        public Airport? SearchAirport(string phrase)
         {
             phrase = phrase.ToLower().Trim();
 
-            return _context.Airports.First(a => a.AirportCode.ToLower().Contains(phrase) ||
+            return _context.Airports.FirstOrDefault(a => a.AirportCode.ToLower().Contains(phrase) ||
                                                 a.Country.ToLower().Contains(phrase) ||
                                                 a.City.ToLower().Contains(phrase));
         }
