@@ -23,12 +23,12 @@ By creating two identical flights there will be 409 Conflict response, and 400 B
 ```
 {
       "from": { "country": "Russia", 
-	 					"city": "Moscow", 
-	 					"airport": "DME" },
+	 	"city": "Moscow", 
+	 	"airport": "DME" },
 
       "to": { "country": "Sweden", 
-					"city": "Stockholm", 
-					"airport": "ARN" },
+		"city": "Stockholm", 
+		"airport": "ARN" },
 
       "carrier": "Ryanair",
       "departureTime": "2019-01-01 00:00",
